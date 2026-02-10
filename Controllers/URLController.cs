@@ -13,7 +13,7 @@ namespace URL_Shortner.Controllers
         [HttpGet]
         public IActionResult Random6()
         {
-            string result = _shortner.RandomizerTest("wtf");
+            string result = _shortner.urlShortner("wtf");
 
             return Ok(result);
         }

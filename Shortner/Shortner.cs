@@ -2,42 +2,33 @@
 {
     public class Shortnerer : IShortner
     {
-        public string RandomizerTest(string url)
+        public string urlShortner(string url)
         {
-            char[] lower = { 'a','b','c','d','e','f','g','h','i','j','k','l','m',
-                             'n','o','p','q','r','s','t','u','v','w','x','y','z'};
+                     //shortURL URL
+            Dictionary<string, string> urls = new();
 
-            char[] upper = {'A','B','C','D','E','F','G','H','I','J','K','L','M',
-                            'N','O','P','Q','R','S','T','U','V','W','X','Y','Z'};
-
-            char[] digits = {'0','1','2','3','4','5','6','7','8','9'};
+            const string allLetterNums = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             
-            string blank = string.Empty;
+            char[] randomizedCode = new char[6];
 
             Random random = new();
 
-            for (int i = 0; i <= 1; i++)
+            string shortURL = string.Empty;
+
+            do
             {
-                
-
-                switch (random.Next(0,3))
+                for (int i = 0; i < 6; i++)
                 {
-                    case 0:
-                        blank += lower[random.Next(0, lower.Length)].ToString() + " " + upper[random.Next(0, upper.Length)].ToString() + " " + digits[random.Next(0, digits.Length)].ToString() + " ";
-                    break;
-
-                    case 1:
-                        blank += upper[random.Next(0, upper.Length)].ToString() + " " + digits[random.Next(0, digits.Length)].ToString() + " " + lower[random.Next(0, lower.Length)].ToString() + " ";
-                    break;
-
-                    case 2:
-                        blank += digits[random.Next(0, digits.Length)].ToString() + " " + lower[random.Next(0, lower.Length)].ToString() + " " + upper[random.Next(0, upper.Length)].ToString() + " ";
-                    break;
-
+                    randomizedCode[i] = allLetterNums[random.Next(0, allLetterNums.Length)];
                 }
-            }
 
-            return blank;
+                shortURL = new string(randomizedCode);
+            }
+            while (!urls.ContainsKey(shortURL));
+
+            urls[shortURL] = url;
+
+            return shortURL;
         }
     }
 }

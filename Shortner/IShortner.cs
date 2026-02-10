@@ -1,4 +1,4 @@
 ﻿public interface IShortner
 {
-        string RandomizerTest(string url);
+        string urlShortner(string url);
 }
