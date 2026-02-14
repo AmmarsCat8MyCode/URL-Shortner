@@ -15,14 +15,45 @@ namespace URL_Shortner.Controllers
         {
             _shortner = shortnerer;
         }
+    
+        private string GetAnonymousId() //Cookies & IP
+        {
+            if (Request.Cookies.TryGetValue("anonId", out var anonId))
+                return anonId;
+
+            var ip = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unkown";
+
+            anonId = Guid.NewGuid().ToString();
+            Response.Cookies.Append("anonId", anonId, new CookieOptions
+            {
+                HttpOnly = true,
+                Expires = DateTimeOffset.UtcNow.AddYears(1),
+            });
+
+            return anonId;
+        }
 
         [HttpGet]
         [Route("generate")]
         public async Task<IActionResult> GenerateShortURL(string url, DateTime? timeLimit)
         {
-            string result = await _shortner.urlShortnerAsync(url, timeLimit);
+            string userId = GetAnonymousId();
+            if (!_shortner.AllowRequest(userId))
+            {
+                return StatusCode(429, "Rate Limit Exceeded. Try Again Later");
+            }
 
-            return Ok(result);
+            try
+            {
+                string result = await _shortner.urlShortnerAsync(url, timeLimit);
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
         }
 
         [HttpGet("r/{code}")]
@@ -32,6 +63,7 @@ namespace URL_Shortner.Controllers
             {
                 string originalUrl = await _shortner.urlRedirectAsync(code);
                 return Redirect(originalUrl);
+                
             }
             catch (Exception ex)
             {
