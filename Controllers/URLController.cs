@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 using URL_Shortner.Shortner;
 
 namespace URL_Shortner.Controllers
@@ -17,18 +18,26 @@ namespace URL_Shortner.Controllers
 
         [HttpGet]
         [Route("generate")]
-        public IActionResult Random6(string url, DateTime? timeLimit)
+        public async Task<IActionResult> GenerateShortURL(string url, DateTime? timeLimit)
         {
-            string result = _shortner.urlShortner(url, timeLimit);
+            string result = await _shortner.urlShortnerAsync(url, timeLimit);
 
             return Ok(result);
         }
 
-        [HttpGet("r/{userURL}")]
-        public IActionResult Redirect(string userURL)
+        [HttpGet("r/{code}")]
+        public async Task<IActionResult> RedirectToOriginal(string code)
         {
-            string result = _shortner.urlRedirect(userURL);
-            return Redirect(result);
+            try
+            {
+                string originalUrl = await _shortner.urlRedirectAsync(code);
+                return Redirect(originalUrl);
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
+
     }
 }

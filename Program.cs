@@ -1,9 +1,13 @@
+using Microsoft.EntityFrameworkCore;
+using System.Drawing.Text;
 using URL_Shortner.Shortner;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddSingleton<IShortner, Shortnerer>();
+builder.Services.AddScoped<IShortner, Shortnerer>();
+
+builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite("Data Source=tinyclone.db"));
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
