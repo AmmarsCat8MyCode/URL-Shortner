@@ -4,5 +4,4 @@
     string urlRedirect(string userURL);
     Task<string> urlShortnerAsync(string url, DateTime? timeLimit);
     Task<string> urlRedirectAsync(string userURL);
-    bool AllowRequest(string userId);
 }

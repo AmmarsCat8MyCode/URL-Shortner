@@ -10,10 +10,12 @@ namespace URL_Shortner.Controllers
     public class URLController : ControllerBase
     {
         private readonly IShortner _shortner;
+        private readonly ILimiters _limiters;
         
-        public URLController(IShortner shortnerer)
+        public URLController(IShortner shortnerer, ILimiters limiters)
         {
             _shortner = shortnerer;
+            _limiters = limiters;
         }
     
         private string GetAnonymousId() //Cookies & IP
@@ -33,12 +35,13 @@ namespace URL_Shortner.Controllers
             return anonId;
         }
 
+
         [HttpGet]
-        [Route("generate")]
+        [Route("Generate")]
         public async Task<IActionResult> GenerateShortURL(string url, DateTime? timeLimit)
         {
             string userId = GetAnonymousId();
-            if (!_shortner.AllowRequest(userId))
+            if (!_limiters.AllowRequest(userId))
             {
                 return StatusCode(429, "Rate Limit Exceeded. Try Again Later");
             }

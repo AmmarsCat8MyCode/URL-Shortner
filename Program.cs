@@ -6,7 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddScoped<IShortner, Shortnerer>();
-
+builder.Services.AddSingleton<ILimiters, Limiters>();
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite("Data Source=tinyclone.db"));
 
 builder.Services.AddControllers();
