@@ -57,12 +57,14 @@ namespace URL_Shortner.Controllers
         //        return "Invalid URL";
         //}
 
+
         [HttpGet]
         [Route("Generate")]
         public async Task<IActionResult> GenerateShortURL(string url, DateTime? timeLimit)
         {
             string userId = GetAnonymousId();
 
+            var baseUrl = $"{Request.Scheme}://{Request.Host}/api/URL/r/";
 
             if (!_limiters.AllowRequest(userId))
             {
@@ -74,7 +76,7 @@ namespace URL_Shortner.Controllers
             {
                 string result = await _shortner.urlShortnerAsync(url, timeLimit);
 
-                return Ok(result);
+                return Ok(baseUrl + result);
             }
             catch (Exception ex)
             {

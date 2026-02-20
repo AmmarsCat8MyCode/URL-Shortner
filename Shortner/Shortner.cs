@@ -27,7 +27,6 @@ namespace URL_Shortner.Shortner
         Dictionary<string, UrlContainer> UrlStorage = new();
         Dictionary<string, string> shortUrlsStorage = new();
         Random random = new();
-        string tinyURLDomain = "www.tinyclone.com/";
         Uri uriResult;
 
 
@@ -43,7 +42,7 @@ namespace URL_Shortner.Shortner
             var now = DateTime.UtcNow;
 
             if (shortUrlsStorage.TryGetValue(url, out var existing))
-                return tinyURLDomain + existing;
+                return existing;
 
             do
             {
@@ -65,7 +64,7 @@ namespace URL_Shortner.Shortner
 
             shortUrlsStorage[url] = shortURL;
 
-            return tinyURLDomain + shortURL;
+            return shortURL;
         }
 
         private string GenerateCode(int size)
@@ -127,7 +126,7 @@ namespace URL_Shortner.Shortner
             var existing = await _context.URLs.FirstOrDefaultAsync(u => u.longUrl == url);
 
             if (existing != null)
-                return tinyURLDomain + existing.code;
+                return existing.code;
 
             string code;
 
@@ -147,7 +146,7 @@ namespace URL_Shortner.Shortner
             _context.URLs.Add(urlStorage);
             await _context.SaveChangesAsync();
 
-            return tinyURLDomain + code;
+            return code;
         }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         public async Task<string> urlRedirectAsync(string userURL)
