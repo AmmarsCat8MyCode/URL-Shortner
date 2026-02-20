@@ -11,7 +11,7 @@ namespace URL_Shortner.Shortner
 
         private readonly AppDbContext _context;
 
-        public Shortnerer (AppDbContext context)
+        public Shortnerer(AppDbContext context)
         {
             _context = context;
         }
@@ -23,7 +23,7 @@ namespace URL_Shortner.Shortner
             public DateTime? expire;
         }
 
-                    //short  long
+        //short  long
         Dictionary<string, UrlContainer> UrlStorage = new();
         Dictionary<string, string> shortUrlsStorage = new();
         Random random = new();
@@ -35,14 +35,14 @@ namespace URL_Shortner.Shortner
         {
 
             const string allLetterNums = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-            
+
             char[] randomizedCode = new char[6];
 
             string shortURL = string.Empty;
 
             var now = DateTime.UtcNow;
-           
-            if(shortUrlsStorage.TryGetValue(url, out var existing))
+
+            if (shortUrlsStorage.TryGetValue(url, out var existing))
                 return tinyURLDomain + existing;
 
             do
@@ -119,7 +119,7 @@ namespace URL_Shortner.Shortner
                 url = "https://" + url;
             }
 
-            if (IsValidHttpUrl(url, out uriResult) == false)
+            if (IsValidHttpUrl(url, out uriResult) == false || !uriResult.Host.Contains('.'))
             {
                 return "Invalid URL";
             }
