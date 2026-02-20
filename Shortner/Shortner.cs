@@ -28,6 +28,7 @@ namespace URL_Shortner.Shortner
         Dictionary<string, string> shortUrlsStorage = new();
         Random random = new();
         string tinyURLDomain = "www.tinyclone.com/";
+        Uri uriResult;
 
 
         public string urlShortner(string url, DateTime? timeLimit) //TEMPORARY METHOD
@@ -98,12 +99,29 @@ namespace URL_Shortner.Shortner
 
             return UrlStorage[userURL].link;
         }
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        public static bool IsValidHttpUrl(string url, out Uri resultUri)
+        {
+            if (Uri.TryCreate(url, UriKind.Absolute, out resultUri))
+            {
+                return (resultUri.Scheme == Uri.UriSchemeHttp ||
+                        resultUri.Scheme == Uri.UriSchemeHttps);
+            }
+            return false;
+        }
+
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         public async Task<string> urlShortnerAsync(string url, DateTime? timeLimit) //PERSISTENCE METHOD
         {
             if (!url.StartsWith("http://") && !url.StartsWith("https://"))
             {
                 url = "https://" + url;
+            }
+
+            if (IsValidHttpUrl(url, out uriResult) == false)
+            {
+                return "Invalid URL";
             }
 
             var existing = await _context.URLs.FirstOrDefaultAsync(u => u.longUrl == url);

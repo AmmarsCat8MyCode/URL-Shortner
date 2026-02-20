@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
 using URL_Shortner.Shortner;
 
@@ -11,6 +12,7 @@ namespace URL_Shortner.Controllers
     {
         private readonly IShortner _shortner;
         private readonly ILimiters _limiters;
+        Uri uriResult;
         
         public URLController(IShortner shortnerer, ILimiters limiters)
         {
@@ -35,16 +37,38 @@ namespace URL_Shortner.Controllers
             return anonId;
         }
 
+        //public static bool IsValidHttpUrl(string url, out Uri resultUri)
+        //{
+        //    if (Uri.TryCreate(url, UriKind.Absolute, out resultUri))
+        //    {
+        //        return (resultUri.Scheme == Uri.UriSchemeHttp ||
+        //                resultUri.Scheme == Uri.UriSchemeHttps);
+        //    }
+        //    return false;
+        //}
+
+        //[HttpGet]
+        //[Route("Validate")]
+        //public string ValidateURL(string url)
+        //{
+        //    if (IsValidHttpUrl(url, out uriResult))
+        //        return "Valid URL";
+        //    else
+        //        return "Invalid URL";
+        //}
 
         [HttpGet]
         [Route("Generate")]
         public async Task<IActionResult> GenerateShortURL(string url, DateTime? timeLimit)
         {
             string userId = GetAnonymousId();
+
+
             if (!_limiters.AllowRequest(userId))
             {
                 return StatusCode(429, "Rate Limit Exceeded. Try Again Later");
             }
+
 
             try
             {
