@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
 using URL_Shortner.Shortner;
@@ -62,16 +63,17 @@ namespace URL_Shortner.Controllers
 
         [HttpGet]
         [Route("Generate")]
-        public async Task<IActionResult> GenerateShortURL(string url, DateTime? timeLimit)
+        public async Task<IActionResult> GenerateShortURL(string? url, DateTime? timeLimit)
         {
             string userId = GetAnonymousId();
 
             var baseUrl = $"{Request.Scheme}://{Request.Host}/api/URL/r/";
 
             if (!_limiters.AllowRequest(userId))
-            {
                 return StatusCode(StatusCodes.Status429TooManyRequests,"Rate Limit Exceeded. Try Again Later");
-            }
+
+            if (string.IsNullOrWhiteSpace(url))
+                return BadRequest("Please Provide a URL");
 
 
             try
