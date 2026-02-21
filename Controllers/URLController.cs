@@ -32,6 +32,8 @@ namespace URL_Shortner.Controllers
             {
                 HttpOnly = true,
                 Expires = DateTimeOffset.UtcNow.AddYears(1),
+                SameSite = SameSiteMode.None,
+                Secure = true
             });
 
             return anonId;
@@ -68,7 +70,7 @@ namespace URL_Shortner.Controllers
 
             if (!_limiters.AllowRequest(userId))
             {
-                return StatusCode(429, "Rate Limit Exceeded. Try Again Later");
+                return StatusCode(StatusCodes.Status429TooManyRequests,"Rate Limit Exceeded. Try Again Later");
             }
 
 

@@ -120,7 +120,7 @@ namespace URL_Shortner.Shortner
 
             if (IsValidHttpUrl(url, out uriResult) == false || !uriResult.Host.Contains('.'))
             {
-                return "Invalid URL";
+                throw new ArgumentException("Invalid Url");
             }
 
             var existing = await _context.URLs.FirstOrDefaultAsync(u => u.longUrl == url);
