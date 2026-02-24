@@ -22,6 +22,9 @@ namespace URL_Shortner.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("clickCount")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("code")
                         .IsRequired()
                         .HasColumnType("TEXT");

@@ -20,7 +20,8 @@ namespace URL_Shortner.Migrations
                     code = table.Column<string>(type: "TEXT", nullable: false),
                     longUrl = table.Column<string>(type: "TEXT", nullable: false),
                     dateCreated = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    expire = table.Column<DateTime>(type: "TEXT", nullable: true)
+                    expire = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    clickCount = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {

@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.EntityFrameworkCore;
-using System.Net;
-using Microsoft.AspNetCore;
+﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.EntityFrameworkCore;
+using System.ComponentModel;
+using System.Net;
 
 namespace URL_Shortner.Shortner
 {
@@ -159,7 +160,23 @@ namespace URL_Shortner.Shortner
             if (container.expire.HasValue && container.expire.Value < DateTime.UtcNow)
                 throw new Exception("Expired");
 
+            container.clickCount++;
+            await _context.SaveChangesAsync();
+
             return container.longUrl;
+        }
+
+        public async Task<int> getClickCount(string code)
+        {
+            var allData = await _context.URLs.FirstOrDefaultAsync(u => u.code == code);
+
+            if (allData == null)
+                throw new Exception("Does Not Exist");
+
+            if (allData.expire.HasValue && allData.expire.Value < DateTime.UtcNow)
+                throw new Exception("Expired");
+
+            return allData.clickCount;
         }
 
     }

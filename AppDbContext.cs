@@ -15,4 +15,5 @@ public class UrlContainer
     public string longUrl { get; set; }
     public DateTime dateCreated { get; set; }
     public DateTime? expire { get; set; }
+    public int clickCount { get; set; }
 }

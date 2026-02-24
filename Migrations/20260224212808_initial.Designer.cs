@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace URL_Shortner.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260214152917_initial")]
+    [Migration("20260224212808_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -23,6 +23,9 @@ namespace URL_Shortner.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("clickCount")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("code")

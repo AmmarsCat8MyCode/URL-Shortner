@@ -14,13 +14,13 @@ namespace URL_Shortner.Controllers
         private readonly IShortner _shortner;
         private readonly ILimiters _limiters;
         Uri uriResult;
-        
+
         public URLController(IShortner shortnerer, ILimiters limiters)
         {
             _shortner = shortnerer;
             _limiters = limiters;
         }
-    
+
         private string GetAnonymousId() //Cookies & IP
         {
             if (Request.Cookies.TryGetValue("anonId", out var anonId))
@@ -70,7 +70,7 @@ namespace URL_Shortner.Controllers
             var baseUrl = $"{Request.Scheme}://{Request.Host}/api/URL/r/";
 
             if (!_limiters.AllowRequest(userId))
-                return StatusCode(StatusCodes.Status429TooManyRequests,"Rate Limit Exceeded. Try Again Later");
+                return StatusCode(StatusCodes.Status429TooManyRequests, "Rate Limit Exceeded. Try Again Later");
 
             if (string.IsNullOrWhiteSpace(url))
                 return BadRequest("Please Provide a URL");
@@ -96,7 +96,21 @@ namespace URL_Shortner.Controllers
             {
                 string originalUrl = await _shortner.urlRedirectAsync(code);
                 return Redirect(originalUrl);
-                
+
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
+
+        [HttpGet("ClickCount/{code}")]
+        public async Task<IActionResult> GetClickCount(string code)
+        {
+            try
+            {
+                int clickCount = await _shortner.getClickCount(code);
+                return Ok(clickCount);
             }
             catch (Exception ex)
             {
